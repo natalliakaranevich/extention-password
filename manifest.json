@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+  "version": "0.0.1",
+  "name": "Password extension",
+  "icons": {
+    "128": "img/chrome-256.png"
+  },
+  "background": {
+    "scripts": ["src/js/background.js"]
+  },
+  "browser_action": {
+    "default_icon": "img/chrome-256.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://id.tmtm.ru/login/*", "https://habrahabr.ru/*"],
+      "js": ["build/content.bundle.js"]
+    }
+  ],
+  "permissions": [
+    "activeTab",
+    "background",
+    "storage"
+  ],
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
