@@ -1,11 +1,9 @@
 const chromeStorage = chrome.storage.local;
 
-export function setChromeStorageData (key ,data) {
-  const temp = {};
-  temp[key] = data;
+export function setChromeStorageData (data) {
   return new Promise((resolve) => {
-    chromeStorage.set(temp, () => {
-      resolve(temp);
+    chromeStorage.set(data, () => {
+      resolve(data);
     });
   });
 }

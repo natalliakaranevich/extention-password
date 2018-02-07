@@ -4,17 +4,22 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import { setChromeStorageData, getChromeStorageData, clearSrotage } from './helpers';
-import { storageCredentialsKey } from './constants';
+import { storageCredentialsKey, storageBlackListKey, storageFrozenListKey } from './constants';
 
 import OfferPopUp from './components/offerPopupHtml.jsx';
+import '../styles/offerPopup.scss'
 
-const locationOrigion = window.location.origin;
-
-class Twitter {
+const locationOrigin = window.location.origin;
+const initialStorage = {
+    [storageCredentialsKey]: [],
+    [storageBlackListKey]: [],
+    [storageFrozenListKey]: []
+};
+// clearSrotage();
+class ContentScript {
     constructor(form) {
         this.forms = form;
 
-        clearSrotage();
         this.createContainer();
         this.showOfferPopup({});
         this.handleSubmit();
@@ -37,13 +42,12 @@ class Twitter {
                     const newCredentials = {
                         password: password.val(),
                         email: email.val(),
-                        url: locationOrigion,
+                        url: locationOrigin,
                         saved: false
                     };
                     getChromeStorageData(storageCredentialsKey).then(data => {
-                        !data.credentials ? data.credentials = [] : '';
-                        data.credentials.push(newCredentials);
-                        setChromeStorageData(storageCredentialsKey, data.credentials)
+                        data[storageCredentialsKey].push(newCredentials);
+                        setChromeStorageData({[storageCredentialsKey]: data[storageCredentialsKey]})
                     })
                 }
             });
@@ -51,22 +55,46 @@ class Twitter {
     }
 
     showOfferPopup() {
-        getChromeStorageData(storageCredentialsKey).then(data => {
-            const { credentials } = data;
+        getChromeStorageData().then(data => {
+            const {
+                [storageCredentialsKey]: credentials,
+                [storageBlackListKey]: blackList,
+                [storageFrozenListKey]: frozenList
+            } = data;
             const validData = credentials && credentials.length;
+
             if (validData) {
-                const currentCredentials = credentials.filter(item => item.url === locationOrigion && !item.saved);
-                debugger;
-                currentCredentials.length && ReactDOM.render(<OfferPopUp />, document.getElementById('#offerPopup'));
+                const currentCredentials = credentials.filter(item => {
+                    return item.url === locationOrigin && !item.saved && !blackList.includes(item.url) &&
+                            frozenList.includes(item.url)
+                });
+
+                currentCredentials.length &&
+                ReactDOM.render(<OfferPopUp credentials={currentCredentials} />, document.getElementById('#offerPopup'));
             }
         });
     }
 }
+let contentScript = null;
+let showPopupHere = false;
 
-const twitter = new Twitter([].slice.call(document.querySelectorAll('form.login_form')));
-console.log(twitter);
+getChromeStorageData().then(data => {
+    const dataExist = !_.isEmpty(data);
+    console.log('storage', data);
+    debugger
+    showPopupHere = dataExist && !data[storageFrozenListKey].includes(locationOrigin);
+    setChromeStorageData(dataExist ? data : initialStorage).then(() => {
+        contentScript = new ContentScript([].slice.call(document.querySelectorAll('form.login_form')));
+        console.log(contentScript);
+    });
+});
+
 
 setTimeout(() => {
-    twitter.createContainer();
-    twitter.showOfferPopup()
-}, '5000');
+    const offerContainer = document.querySelector('#offerPopup');
+
+    if (!offerContainer && contentScript !== null) {
+        contentScript.createContainer();
+        showPopupHere && contentScript.showOfferPopup();
+    }
+}, 5000);
