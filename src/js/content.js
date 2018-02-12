@@ -15,6 +15,7 @@ const initialStorage = {
     [storageBlackListKey]: [],
     [storageFrozenListKey]: []
 };
+const loginForm = document.querySelectorAll('form.login_form');
 // clearSrotage();
 class ContentScript {
     constructor(form) {
@@ -45,9 +46,24 @@ class ContentScript {
                         url: locationOrigin,
                         saved: false
                     };
-                    getChromeStorageData(storageCredentialsKey).then(data => {
-                        data[storageCredentialsKey].push(newCredentials);
-                        setChromeStorageData({[storageCredentialsKey]: data[storageCredentialsKey]})
+
+                    getChromeStorageData([storageCredentialsKey, storageFrozenListKey]).then(data => {
+                        const shouldAdd = data[storageCredentialsKey].find(item => {
+                            return item.password === newCredentials.password && item.email === newCredentials.email &&
+                                    item.url === newCredentials.url
+                        });
+                        const newFrozen = data[storageFrozenListKey].filter(item => {
+                            return item !== newCredentials.url;
+                        });
+
+                        if (!shouldAdd) {
+                            data[storageCredentialsKey].push(newCredentials);
+                        }
+
+                        setChromeStorageData({
+                            [storageCredentialsKey]: data[storageCredentialsKey],
+                            [storageFrozenListKey]: newFrozen
+                        })
                     })
                 }
             });
@@ -66,7 +82,7 @@ class ContentScript {
             if (validData) {
                 const currentCredentials = credentials.filter(item => {
                     return item.url === locationOrigin && !item.saved && !blackList.includes(item.url) &&
-                            frozenList.includes(item.url)
+                            !frozenList.includes(item.url)
                 });
 
                 currentCredentials.length &&
@@ -81,10 +97,10 @@ let showPopupHere = false;
 getChromeStorageData().then(data => {
     const dataExist = !_.isEmpty(data);
     console.log('storage', data);
-    debugger
-    showPopupHere = dataExist && !data[storageFrozenListKey].includes(locationOrigin);
+    showPopupHere = dataExist && data[storageFrozenListKey] && !data[storageFrozenListKey].includes(locationOrigin);
+
     setChromeStorageData(dataExist ? data : initialStorage).then(() => {
-        contentScript = new ContentScript([].slice.call(document.querySelectorAll('form.login_form')));
+        contentScript = new ContentScript([].slice.call(loginForm));
         console.log(contentScript);
     });
 });
