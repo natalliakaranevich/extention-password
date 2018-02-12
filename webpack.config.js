@@ -11,10 +11,10 @@ var alias = {};
 
 var secretsPath = path.join(__dirname, ("secrets." + env.NODE_ENV + ".js"));
 
-var fileExtensions = [ "jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2" ];
+var fileExtensions = ["jpg", "jpeg", "png", "gif", "eot", "otf", "svg", "ttf", "woff", "woff2"];
 
 if (fileSystem.existsSync(secretsPath)) {
-    alias[ "secrets" ] = secretsPath;
+    alias["secrets"] = secretsPath;
 }
 
 var options = {
@@ -34,7 +34,7 @@ var options = {
                 loaders: 'babel-loader',
                 exclude: /node_modules/,
                 query: {
-                    presets: [ 'es2015', 'react', 'stage-1' ]
+                    presets: ['es2015', 'react', 'stage-1', 'env']
                 }
             },
             {
@@ -65,12 +65,12 @@ var options = {
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "popup.html"),
             filename: "popup.html",
-            chunks: [ "popup" ]
+            chunks: ["popup"]
         }),
         new HtmlWebpackPlugin({
             template: path.join(__dirname, "src", "background.html"),
             filename: "background.html",
-            chunks: [ "background" ]
+            chunks: ["background"]
         }),
         new WriteFilePlugin()
     ]

@@ -1,13 +1,15 @@
+/* global window, document, setTimeout, console */
+
 import $ from 'jquery';
 import _ from 'lodash';
-import React from 'react';
+import React from 'react'; // eslint-disable-line no-unused-vars
 import ReactDOM from 'react-dom';
 
 import { setChromeStorageData, getChromeStorageData, clearSrotage } from './helpers';
 import { storageCredentialsKey, storageBlackListKey, storageFrozenListKey } from './constants';
 
-import OfferPopUp from './components/offerPopupHtml.jsx';
-import '../styles/offerPopup.scss'
+import OfferPopUp from './components/offerPopupHtml.jsx'; // eslint-disable-line no-unused-vars
+import '../styles/offerPopup.scss';
 
 const locationOrigin = window.location.origin;
 const initialStorage = {
@@ -50,7 +52,7 @@ class ContentScript {
                     getChromeStorageData([storageCredentialsKey, storageFrozenListKey]).then(data => {
                         const shouldAdd = data[storageCredentialsKey].find(item => {
                             return item.password === newCredentials.password && item.email === newCredentials.email &&
-                                    item.url === newCredentials.url
+                                    item.url === newCredentials.url;
                         });
                         const newFrozen = data[storageFrozenListKey].filter(item => {
                             return item !== newCredentials.url;
@@ -63,11 +65,11 @@ class ContentScript {
                         setChromeStorageData({
                             [storageCredentialsKey]: data[storageCredentialsKey],
                             [storageFrozenListKey]: newFrozen
-                        })
-                    })
+                        });
+                    });
                 }
             });
-        })
+        });
     }
 
     showOfferPopup() {
@@ -82,7 +84,7 @@ class ContentScript {
             if (validData) {
                 const currentCredentials = credentials.filter(item => {
                     return item.url === locationOrigin && !item.saved && !blackList.includes(item.url) &&
-                            !frozenList.includes(item.url)
+                            !frozenList.includes(item.url);
                 });
 
                 currentCredentials.length &&

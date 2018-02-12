@@ -1,0 +1,147 @@
+{
+  "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true,
+      "experimentalObjectRestSpread": true
+    }
+  },
+  "plugins": [
+    "react"
+  ],
+  "rules": {
+    "no-console": "warn",
+    "no-debugger": "warn",
+    "no-unused-vars": "warn",
+    "no-empty-function": "warn",
+    "react/prop-types": "warn",
+    "array-bracket-spacing": "error",
+    "arrow-spacing": "error",
+    "block-scoped-var": "error",
+    "block-spacing": "error",
+    "brace-style": [
+      "error",
+      "1tbs",
+      {
+        "allowSingleLine": true
+      }
+    ],
+    "comma-spacing": "error",
+    "comma-style": "error",
+    "consistent-this": [
+      "error",
+      "me"
+    ],
+    "curly": "error",
+    "eol-last": "error",
+    "func-call-spacing": "error",
+    "generator-star-spacing": [
+      "error",
+      "after"
+    ],
+    "indent": [
+      0,
+      4,
+      {
+        "SwitchCase": 1
+      }
+    ],
+    "jsx-quotes": "error",
+    "key-spacing": "error",
+    "keyword-spacing": "error",
+    "linebreak-style": "error",
+    "lines-around-directive": "error",
+    "new-parens": "error",
+    "newline-before-return": "error",
+    "no-caller": "error",
+    "no-eval": "error",
+    "no-extend-native": "error",
+    "no-global-assign": "error",
+    "no-implied-eval": "error",
+    "no-multi-spaces": "error",
+    "no-multi-str": "error",
+    "no-trailing-spaces": "error",
+    "no-useless-computed-key": "error",
+    "no-useless-concat": "error",
+    "no-var": "warn",
+    "no-whitespace-before-property": "error",
+    "no-with": "error",
+    "object-curly-spacing": [
+      "error",
+      "always",
+      {
+        "arraysInObjects": true,
+        "objectsInObjects": true
+      }
+    ],
+    "one-var": [
+      "warn",
+      {
+        "let": "never",
+        "const": "never"
+      }
+    ],
+    "operator-linebreak": "error",
+    "prefer-const": "warn",
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": false,
+        "allowTemplateLiterals": true
+      }
+    ],
+    "radix": "error",
+    "require-await": "error",
+    "semi": "error",
+    "semi-spacing": "error",
+    "space-before-blocks": "error",
+    "space-before-function-paren": [
+      "error",
+      {
+        "anonymous": "never",
+        "named": "never",
+        "asyncArrow": "always"
+      }
+    ],
+    "space-in-parens": "error",
+    "space-infix-ops": "error",
+    "space-unary-ops": "error",
+    "spaced-comment": "warn",
+    "valid-jsdoc": [
+      "warn",
+      {
+        "prefer": {
+          "arg": "param",
+          "argument": "param",
+          "return": "returns"
+        },
+        "requireParamDescription": false,
+        "requireReturnDescription": false,
+        "requireReturnType": true
+      }
+    ],
+    "wrap-iife": [
+      "error",
+      "inside"
+    ],
+    "yield-star-spacing": [
+      "error",
+      "after"
+    ],
+    "react/no-string-refs": "error",
+    "react/display-name": [0, { "ignoreTranspilerName": true }],
+    "react/jsx-uses-vars": [2]
+  },
+  "settings": {
+    "react": {
+      "createClass": "createReactClass", // Regex for Component Factory to use, default to "createReactClass"
+      "pragma": "React",  // Pragma to use, default to "React"
+      "version": "15.5" // React version, default to the latest React stable release
+    },
+    "propWrapperFunctions": [ "forbidExtraProps" ] // The names of any functions used to wrap the propTypes object, such as `forbidExtraProps`. If this isn't set, any propTypes wrapped in a function will be skipped.
+  }
+}

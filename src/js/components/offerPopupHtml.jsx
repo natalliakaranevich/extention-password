@@ -23,6 +23,7 @@ class OfferPopUp extends Component {
             }]);
             setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
                 this.setState({ showForm: false, message: messages.passwordSaved });
+
             })
         })
     }
