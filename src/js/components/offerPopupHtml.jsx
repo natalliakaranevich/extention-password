@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 
-import { setChromeStorageData, getChromeStorageData, clearSrotage } from '../helpers';
+import { setChromeStorageData, getChromeStorageData } from '../helpers';
 import { storageBlackListKey, storageFrozenListKey, storageCredentialsKey, messages } from '../constants';
 
 class OfferPopUp extends Component {
@@ -22,7 +22,7 @@ class OfferPopUp extends Component {
                 saved: true
             }]);
             setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
-                this.setState({ showForm: false, message: messages.passwordSaved })
+                this.setState({ showForm: false, message: messages.passwordSaved });
             })
         })
     }
@@ -32,7 +32,7 @@ class OfferPopUp extends Component {
             const newData = data[storageFrozenListKey]
                     .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
             setChromeStorageData({ [storageFrozenListKey]: newData }).then(() => {
-                this.setState({ cancel: true })
+                this.setState({ cancel: true });
             })
         })
     }
@@ -42,7 +42,7 @@ class OfferPopUp extends Component {
             const newData = data[storageBlackListKey]
                     .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
             setChromeStorageData({ [storageBlackListKey]: newData }).then(() => {
-                this.setState({ showForm: false, message: messages.websiteToBlackList })
+                this.setState({ showForm: false, message: messages.websiteToBlackList });
             })
         })
     }
@@ -63,9 +63,8 @@ class OfferPopUp extends Component {
                             <div style={{ display: 'flex' }}>
                                 <button onClick={() => this.saveCredentials(item)}>Yes</button>
                                 <button onClick={() => this.cancel(item.url)} style={{ marginLeft: 10 }}>No</button>
-                                <button onClick={() => this.addToBlackList(item.url)} style={{ marginLeft: 10 }}>Never
-                                    for
-                                    this site
+                                <button onClick={() => this.addToBlackList(item.url)} style={{ marginLeft: 10 }}>
+                                    Never for this site
                                 </button>
                             </div>
                         </div>;
