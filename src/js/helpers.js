@@ -1,23 +1,30 @@
+/* global Promise, chrome */
 const chromeStorage = chrome.storage.local;
 
-export function setChromeStorageData (data) {
-  return new Promise((resolve) => {
-    chromeStorage.set(data, () => {
-      resolve(data);
+export const setChromeStorageData = data => {
+    return new Promise(resolve => {
+        chromeStorage.set(data, () => {
+            resolve(data);
+        });
     });
-  });
-}
+};
 
-export function getChromeStorageData (key) {
-  return new Promise((resolve) => {
-    chromeStorage.get(key, (result) => {
-      resolve(result);
+export const getChromeStorageData = (key) => {
+    return new Promise(resolve => {
+        chromeStorage.get(key, (result) => {
+            resolve(result);
+        });
     });
-  });
-}
+};
 
-export function clearSrotage(callback) {
-  chrome.storage.local.clear(function() {
-   if (callback) return callback(chrome.runtime.lastError)
-  });
-}
+export const clearSrotage = callback => {
+    chrome.storage.local.clear(() => {
+        if (callback) {
+            return callback(chrome.runtime.lastError);
+        }
+    });
+};
+
+export const convertPassword = password => {
+    return password.split('').map(() => '*');
+};

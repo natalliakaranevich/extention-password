@@ -1,32 +1,26 @@
 import React, { Component } from 'react';
 
-import { getChromeStorageData } from '../helpers';
-
 import Loader from './core/loader.jsx';
-
 import '../../styles/app.scss';
+import SavedPasswords from './savedPasswords.jsx';
 
 class App extends Component {
     constructor() {
         super();
 
         this.state = {
-            loading: true
+            loading: false
         };
-
-        getChromeStorageData().then(data => {
-            this.setState({
-                data: data,
-                // loading: false
-            });
-        });
     }
 
     render() {
         const { loading } = this.state;
 
         return !loading ? (
-                <div>App</div>
+                <div className="app-wrapper">
+                    <h2>Saved passwords</h2>
+                    <SavedPasswords/>
+                </div>
         ) : <Loader />;
     }
 }

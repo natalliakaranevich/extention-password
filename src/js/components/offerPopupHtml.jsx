@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { setChromeStorageData, getChromeStorageData } from '../helpers';
@@ -12,7 +13,7 @@ class OfferPopUp extends Component {
             showForm: true,
             massage: '',
             cancel: false
-        }
+        };
     }
 
     saveCredentials(current) {
@@ -24,8 +25,8 @@ class OfferPopUp extends Component {
             setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
                 this.setState({ showForm: false, message: messages.passwordSaved });
 
-            })
-        })
+            });
+        });
     }
 
     cancel(url) {
@@ -34,8 +35,8 @@ class OfferPopUp extends Component {
                     .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
             setChromeStorageData({ [storageFrozenListKey]: newData }).then(() => {
                 this.setState({ cancel: true });
-            })
-        })
+            });
+        });
     }
 
     addToBlackList(url) {
@@ -44,8 +45,8 @@ class OfferPopUp extends Component {
                     .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
             setChromeStorageData({ [storageBlackListKey]: newData }).then(() => {
                 this.setState({ showForm: false, message: messages.websiteToBlackList });
-            })
-        })
+            });
+        });
     }
 
     render() {
@@ -76,5 +77,9 @@ class OfferPopUp extends Component {
         </div>;
     }
 }
+
+OfferPopUp.propTypes = {
+    credentials: PropTypes.array.isRequired
+};
 
 export default OfferPopUp;
