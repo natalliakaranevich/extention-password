@@ -3,77 +3,70 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { setChromeStorageData, getChromeStorageData } from '../helpers';
-import { storageBlackListKey, storageFrozenListKey, storageCredentialsKey, messages } from '../constants';
+import { storageBlackListKey, storageCredentialsKey, messages } from '../constants';
+import PasswordItem from './passwordItem.jsx';
 
 class OfferPopUp extends Component {
     constructor() {
         super();
 
         this.state = {
-            showForm: true,
-            massage: '',
-            cancel: false
+            messages: {},
+            cancel: {}
         };
     }
 
-    saveCredentials(current) {
+    saveCredentials(current, index) {
         getChromeStorageData(storageCredentialsKey).then(data => {
             const newData = data[storageCredentialsKey].filter(c => !_.isEqual(c, current)).concat([{
                 ...current,
                 saved: true
             }]);
+            debugger
             setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
-                this.setState({ showForm: false, message: messages.passwordSaved });
+                this.setState({ messages: { [index]: messages.passwordSaved } });
 
             });
         });
     }
 
-    cancel(url) {
-        getChromeStorageData(storageFrozenListKey).then(data => {
-            const newData = data[storageFrozenListKey]
-                    .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
-            setChromeStorageData({ [storageFrozenListKey]: newData }).then(() => {
-                this.setState({ cancel: true });
+    cancel(index) {
+        getChromeStorageData(storageCredentialsKey).then(data => {
+            data[storageCredentialsKey].splice(index, 1);
+            setChromeStorageData({ [storageCredentialsKey]: data[storageCredentialsKey] }).then(() => {
+                this.setState({
+                    cancel: { ...this.state.cancel, [index]: messages.passwordSaved }
+                });
             });
         });
     }
 
-    addToBlackList(url) {
+    addToBlackList(url, index) {
         getChromeStorageData(storageBlackListKey).then(data => {
-            const newData = data[storageBlackListKey]
-                    .filter(item => item.indexOf(url) !== -1 && url.indexOf(item) !== -1).concat([url]);
+            const newData = _.unionWith(data[storageBlackListKey].concat([url]), _.isEqual);
             setChromeStorageData({ [storageBlackListKey]: newData }).then(() => {
-                this.setState({ showForm: false, message: messages.websiteToBlackList });
+                this.setState({ messages: { [index]: messages.websiteToBlackList } });
             });
         });
     }
 
     render() {
         const { credentials } = this.props;
-        const { showForm, message, cancel } = this.state;
+        const { messages, cancel } = this.state;
 
-        return !cancel && credentials.length && <div className="credentials">
-            {showForm ? (
-                    credentials.map((item, index) => {
-                        return <div key={index} className="item">
-                            Would you like save credentials for <strong>{item.url}</strong>?
-                            <br/>
-                            <div style={{ marginTop: 5 }}><i>Username</i>: {item.email}</div>
-                            <div><i>Password</i>: {item.password}</div>
-                            <br/>
-                            <div style={{ display: 'flex' }}>
-                                <button onClick={() => this.saveCredentials(item)}>Yes</button>
-                                <button onClick={() => this.cancel(item.url)} style={{ marginLeft: 10 }}>No</button>
-                                <button onClick={() => this.addToBlackList(item.url)} style={{ marginLeft: 10 }}>
-                                    Never for this site
-                                </button>
-                            </div>
-                        </div>;
-                    })
-            ) : (
-                    message && <p>{message}</p>
-            )}
+        return credentials.length && <div className="credentials-wrapper">
+            {credentials.map((item, index) => {
+                return !cancel[index] ? <div key={index} className="credential">
+                    Would you like save credentials for:
+                    <PasswordItem item={item}
+                                  index={index}
+                                  offerSave={true}
+                                  message={messages[index]}
+                                  cancel={() => this.cancel(index)}
+                                  saveCredentials={(item) => this.saveCredentials(item, index)}
+                                  addToBlackList={(url) => this.addToBlackList(url, index)}/>
+                </div> : null;
+            })}
         </div>;
     }
 }

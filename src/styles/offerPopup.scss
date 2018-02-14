@@ -1,16 +1,25 @@
 .offer-popup-container {
+    @import "global";
+    @import "components/messages";
+
     & {
         position: fixed;
         right: 20px;
         top: 20px;
+        color: #000;
+        font-size: 12px;
     }
 
-    .credentials {
-        border: 1px solid #000;
-        padding: 10px;
-        background: #fff;
+    .credentials-wrapper {
         width: 300px;
         text-align: left;
         overflow: hidden;
+    }
+
+    .credential {
+        border: 1px solid #000;
+        padding: 10px;
+        background: #fff;
+        margin-bottom: 5px;
     }
 }

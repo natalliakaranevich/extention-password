@@ -37,13 +37,13 @@ class SavedPasswords extends Component {
     render() {
         const { credentials } = this.state;
 
-        return credentials && credentials.length ? (
+        return credentials && credentials.filter(i => i.saved).length ? (
                 <div className="saved-passwords">
                     {credentials.map((item, index) => {
                         return <PasswordItem key={index}
                                              item={item}
                                              index={index}
-                                             updateCredentials={(index) => this.updateCredentials(index)}/>;
+                                             removeCredentials={(index) => this.updateCredentials(index)}/>;
                     })}
                 </div>
         ) : (

@@ -13,12 +13,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://id.tmtm.ru/*", "https://habrahabr.ru/*"],
+      "matches": ["https://itechforum.itechart-group.com/*"],
       "js": ["build/content.bundle.js"]
     }
   ],
   "permissions": [
     "activeTab",
+    "tabs",
     "background",
     "storage"
   ],
