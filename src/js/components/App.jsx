@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import Loader from './core/loader.jsx';
 import '../../styles/app.scss';
 import SavedPasswords from './savedPasswords.jsx';
+import BlackList from './blackList.jsx';
 
 class App extends Component {
     constructor() {
@@ -20,6 +21,9 @@ class App extends Component {
                 <div className="app-wrapper">
                     <h2>Saved passwords</h2>
                     <SavedPasswords/>
+                    <br/>
+                    <h2>Black List</h2>
+                    <BlackList/>
                 </div>
         ) : <Loader />;
     }

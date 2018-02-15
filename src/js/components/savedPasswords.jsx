@@ -21,7 +21,8 @@ class SavedPasswords extends Component {
         });
     }
 
-    updateCredentials(index) {
+    updateCredentials(e, index) {
+        e.preventDefault();
         getChromeStorageData(storageCredentialsKey).then(data => {
             const { [storageCredentialsKey]: credentials } = data;
 
@@ -43,7 +44,7 @@ class SavedPasswords extends Component {
                         return <PasswordItem key={index}
                                              item={item}
                                              index={index}
-                                             removeCredentials={(index) => this.updateCredentials(index)}/>;
+                                             removeCredentials={(e, index) => this.updateCredentials(e, index)}/>;
                     })}
                 </div>
         ) : (

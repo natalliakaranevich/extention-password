@@ -7,13 +7,24 @@ import { storageBlackListKey, storageCredentialsKey, messages } from '../constan
 import PasswordItem from './passwordItem.jsx';
 
 class OfferPopUp extends Component {
-    constructor() {
+    constructor(props) {
         super();
 
         this.state = {
             messages: {},
-            cancel: {}
+            cancel: {},
+            credentials: props.credentials
         };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const { credentials } = this.state;
+
+        if (!_.isEqual(nextProps, this.props)) {
+            this.setState({
+                credentials: _.unionWith(credentials.concat(nextProps.credentials), _.isEqual)
+            });
+        }
     }
 
     saveCredentials(current, index) {
@@ -22,7 +33,7 @@ class OfferPopUp extends Component {
                 ...current,
                 saved: true
             }]);
-            debugger
+
             setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
                 this.setState({ messages: { [index]: messages.passwordSaved } });
 
@@ -30,29 +41,36 @@ class OfferPopUp extends Component {
         });
     }
 
-    cancel(index) {
+    cancel(item, index) {
         getChromeStorageData(storageCredentialsKey).then(data => {
-            data[storageCredentialsKey].splice(index, 1);
-            setChromeStorageData({ [storageCredentialsKey]: data[storageCredentialsKey] }).then(() => {
+            const newData = data[storageCredentialsKey].filter(el => !_.isEqual(el, item));
+
+            setChromeStorageData({ [storageCredentialsKey]: newData }).then(() => {
                 this.setState({
-                    cancel: { ...this.state.cancel, [index]: messages.passwordSaved }
+                    cancel: { ...this.state.cancel, [index]: true }
                 });
             });
         });
     }
 
     addToBlackList(url, index) {
-        getChromeStorageData(storageBlackListKey).then(data => {
-            const newData = _.unionWith(data[storageBlackListKey].concat([url]), _.isEqual);
-            setChromeStorageData({ [storageBlackListKey]: newData }).then(() => {
-                this.setState({ messages: { [index]: messages.websiteToBlackList } });
+        getChromeStorageData([storageBlackListKey, storageCredentialsKey]).then(data => {
+            const newBlackList = _.unionWith(data[storageBlackListKey].concat([url]), _.isEqual);
+            const newCredentials = data[storageCredentialsKey].filter(i => i.url !== url && !i.saved);
+            setChromeStorageData({
+                [storageBlackListKey]: newBlackList,
+                [storageCredentialsKey]: newCredentials
+            }).then(() => {
+                this.setState({
+                    messages: { [index]: messages.websiteToBlackList },
+                    credentials: newCredentials
+                });
             });
         });
     }
 
     render() {
-        const { credentials } = this.props;
-        const { messages, cancel } = this.state;
+        const { messages, cancel, credentials } = this.state;
 
         return credentials.length && <div className="credentials-wrapper">
             {credentials.map((item, index) => {
@@ -62,7 +80,7 @@ class OfferPopUp extends Component {
                                   index={index}
                                   offerSave={true}
                                   message={messages[index]}
-                                  cancel={() => this.cancel(index)}
+                                  cancel={() => this.cancel(item, index)}
                                   saveCredentials={(item) => this.saveCredentials(item, index)}
                                   addToBlackList={(url) => this.addToBlackList(url, index)}/>
                 </div> : null;
