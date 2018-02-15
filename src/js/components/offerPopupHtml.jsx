@@ -18,11 +18,9 @@ class OfferPopUp extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        const { credentials } = this.state;
-
         if (!_.isEqual(nextProps, this.props)) {
             this.setState({
-                credentials: _.unionWith(credentials.concat(nextProps.credentials), _.isEqual)
+                credentials: nextProps.credentials
             });
         }
     }

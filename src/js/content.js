@@ -54,19 +54,24 @@ class ContentScript {
                     };
 
                     getChromeStorageData([storageCredentialsKey]).then(data => {
-                        const shouldAdd = data[storageCredentialsKey].find(item => {
+                        const sameItem = data[storageCredentialsKey].find(item => {
                             return item.password === newCredentials.password && item.email === newCredentials.email &&
                                     item.url === newCredentials.url;
                         });
-
-                        if (!shouldAdd) {
-                            data[storageCredentialsKey].push(newCredentials);
-                        }
-
-                        setChromeStorageData({
-                            [storageCredentialsKey]: data[storageCredentialsKey]
+                        const sameForSiteNotSavedIndex = data[storageCredentialsKey].findIndex(item => {
+                            return item.url === newCredentials.url && !item.saved;
                         });
-                        this.showOfferPopup();
+
+                        if (!sameItem) {
+                            sameForSiteNotSavedIndex === -1
+                                    ? data[storageCredentialsKey].push(newCredentials)
+                                    : data[storageCredentialsKey][sameForSiteNotSavedIndex] = newCredentials;
+console.log('all', data[storageCredentialsKey]);
+console.log('same', data[storageCredentialsKey][sameForSiteNotSavedIndex]);
+console.log('newCredentials', newCredentials);
+                            setChromeStorageData({ [storageCredentialsKey]: data[storageCredentialsKey] });
+                            this.showOfferPopup();
+                        }
                     });
                 }
             });
